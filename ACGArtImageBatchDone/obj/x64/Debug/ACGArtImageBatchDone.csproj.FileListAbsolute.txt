@@ -1,0 +1,14 @@
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.exe.config
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.exe
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.pdb
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.exe
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.pdb
+C:\Users\xJoker\Documents\Visual Studio 2013\Projects\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.csprojResolveAssemblyReference.cache
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.exe.config
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.exe
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.pdb
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.exe
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\ACGArtImageBatchDone.pdb
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\Newtonsoft.Json.dll
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\bin\x64\Debug\Newtonsoft.Json.xml
+C:\Users\xJoker\Desktop\ACGArtImageBatchDone\ACGArtImageBatchDone\obj\x64\Debug\ACGArtImageBatchDone.csprojResolveAssemblyReference.cache
