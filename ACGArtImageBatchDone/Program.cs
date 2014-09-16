@@ -21,7 +21,7 @@ namespace ACGArtImageBatchDone
         {
             checkDiskPath();
             fetchImageList();
-            ThreadDown(5);
+            ThreadDown();
         }
         //check path
         static void checkDiskPath()
@@ -65,10 +65,13 @@ namespace ACGArtImageBatchDone
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                Console.WriteLine("Link to server failure!");
+                Console.ReadKey();
+                System.Environment.Exit(System.Environment.ExitCode);
                 
-                throw ex;
+                
             }
 
             
@@ -79,9 +82,20 @@ namespace ACGArtImageBatchDone
         {
             string tempFileName = SaveDiskPath;
             tempFileName = tempFileName + filename;
-            if(System.IO.File.Exists(tempFileName))
+            bool a = System.IO.File.Exists(tempFileName);
+            FileInfo info =null;
+            if (a)
             {
-                Console.WriteLine(filename+" Exist");
+                info = new FileInfo(tempFileName);
+                if (info.Length == 0)
+                {
+                    Console.WriteLine(filename + " Error");
+                    File.Delete(tempFileName);
+                }
+            }
+            if (System.IO.File.Exists(tempFileName))
+            {
+                Console.WriteLine(filename + " Exist");
                 return;
             }
             else
@@ -101,6 +115,7 @@ namespace ACGArtImageBatchDone
                     fs.Close();
                     request.Abort();
                     response.Close();
+                    Console.WriteLine(filename+ " OK");
 
                 }
                 catch (Exception ex)
@@ -110,28 +125,25 @@ namespace ACGArtImageBatchDone
             }
         }
 
-        static void ThreadDown(int num)
+        static void ThreadDown()
         {
-            int temp = num;
             while (getNum != imgsNum)
             {
-                if(Process.GetCurrentProcess().Threads.Count>300)
+                for (int i = 0; i <= imgsNum; i++)
                 {
-                    Thread.Sleep(2000);
-                }
-                else
-                {
-                    for (int i = 1; i <= num; i++)
+                    while (Process.GetCurrentProcess().Threads.Count > 100)
                     {
-                        ParameterizedThreadStart ParStart = new ParameterizedThreadStart(downjpg);
-                        Thread run = new Thread(ParStart);
-                        object o = imgs[getNum];
-                        getNum++;
-                        Thread.Sleep(50);
-                        run.Start(o);
+                        Thread.Sleep(2000);
                     }
-                }
-                Console.WriteLine("Threads:"+getNum);
+                    ParameterizedThreadStart ParStart = new ParameterizedThreadStart(downjpg);
+                    Thread run = new Thread(ParStart);
+                    object o = imgs[getNum];
+                    getNum++;
+                    Thread.Sleep(50);
+                    run.Start(o);
+                    Console.WriteLine("Threads:" + getNum);
+                } 
+                
             }
             int fileNum = Directory.GetFiles(SaveDiskPath, "*.jpg").Length;
             Console.WriteLine("DownLoad Over,File:"+fileNum);
