@@ -5,6 +5,7 @@ using System.Net;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ACGArtImageBatchDone
 {
@@ -20,7 +21,7 @@ namespace ACGArtImageBatchDone
         {
             checkDiskPath();
             fetchImageList();
-            ThreadDown(15);
+            ThreadDown(5);
         }
         //check path
         static void checkDiskPath()
@@ -33,33 +34,41 @@ namespace ACGArtImageBatchDone
 
         static void fetchImageList()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ACGHost) ;
-            request.UserAgent = "ACGArt/4.4.11 CFNetwork/672.1.15 Darwin/14.0.0";
-            request.Accept = "*/*";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Console.WriteLine("Link OK \nRead Json Start");
-            
-            //get and read json
-            Stream jsonget = response.GetResponseStream();
-            string content,content1;
-            using (StreamReader reader = new StreamReader(jsonget, Encoding.Default))
+            try
             {
-                content1= content = reader.ReadToEnd();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ACGHost);
+                request.UserAgent = "ACGArt/4.4.11 CFNetwork/672.1.15 Darwin/14.0.0";
+                request.Accept = "*/*";
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Console.WriteLine("Link OK \nRead Json Start");
 
-            }
-            var matches = Regex.Matches(content, "[\\[,\\,]\\\"[0-9]*\\.jpg");
-            var matches1 = Regex.Matches(content1, "\\d+");
-            imgsNum = Convert.ToInt32(matches1[0].ToString());
-            foreach (Match match in matches)
-            {
-                var result = match.Value.ToString();
-                result = result.Substring(3, result.Length - 3);
-                imgs.Add(result);
-            }
-            if(imgs.Count==imgsNum)
-            {
-                Console.WriteLine("Donwload allImgs is:"+imgsNum);
+                //get and read json
+                Stream jsonget = response.GetResponseStream();
+                string content, content1;
+                using (StreamReader reader = new StreamReader(jsonget, Encoding.Default))
+                {
+                    content1 = content = reader.ReadToEnd();
 
+                }
+                var matches = Regex.Matches(content, "[\\[,\\,]\\\"[0-9]*\\.jpg");
+                var matches1 = Regex.Matches(content1, "\\d+");
+                imgsNum = Convert.ToInt32(matches1[0].ToString());
+                foreach (Match match in matches)
+                {
+                    var result = match.Value.ToString();
+                    result = result.Substring(3, result.Length - 3);
+                    imgs.Add(result);
+                }
+                if (imgs.Count == imgsNum)
+                {
+                    Console.WriteLine("Donwload allImgs is:" + imgsNum);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
             }
 
             
@@ -77,36 +86,52 @@ namespace ACGArtImageBatchDone
             }
             else
             {
-                Console.WriteLine("DonwLoad " + filename);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://acg.sugling.in/_uploadfiles/iphone5/640/1" + filename);
-                request.UserAgent = "ACGArt/4.4.11 CFNetwork/672.1.15 Darwin/14.0.0";
-                request.Accept = "*/*";
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream image = response.GetResponseStream();
-                int length = (int)response.ContentLength;
-                BinaryReader br = new BinaryReader(image);
-                FileStream fs = File.Create(tempFileName);
-                fs.Write(br.ReadBytes(length), 0, length);
-                br.Close();
-                fs.Close();
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://acg.sugling.in/_uploadfiles/iphone5/640/1" + filename);
+                    request.UserAgent = "ACGArt/4.4.11 CFNetwork/672.1.15 Darwin/14.0.0";
+                    request.Accept = "*/*";
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    Stream image = response.GetResponseStream();
+                    int length = (int)response.ContentLength;
+                    BinaryReader br = new BinaryReader(image);
+                    FileStream fs = File.Create(tempFileName);
+                    fs.Write(br.ReadBytes(length), 0, length);
+                    br.Close();
+                    fs.Close();
+                    request.Abort();
+                    response.Close();
+
+                }
+                catch (Exception ex)
+                {
+                        
+                }
             }
         }
 
         static void ThreadDown(int num)
         {
             int temp = num;
-            
             while (getNum != imgsNum)
             {
-                for (int i = 1; i <= num; i++)
+                if(Process.GetCurrentProcess().Threads.Count>300)
                 {
-                    ParameterizedThreadStart ParStart = new ParameterizedThreadStart(downjpg);
-                    Thread run = new Thread(ParStart);
-                    object o = imgs[getNum];
-                    getNum++;
-                    run.IsBackground=true;
-                    run.Start(o);
+                    Thread.Sleep(2000);
                 }
+                else
+                {
+                    for (int i = 1; i <= num; i++)
+                    {
+                        ParameterizedThreadStart ParStart = new ParameterizedThreadStart(downjpg);
+                        Thread run = new Thread(ParStart);
+                        object o = imgs[getNum];
+                        getNum++;
+                        Thread.Sleep(50);
+                        run.Start(o);
+                    }
+                }
+                Console.WriteLine("Threads:"+getNum);
             }
             int fileNum = Directory.GetFiles(SaveDiskPath, "*.jpg").Length;
             Console.WriteLine("DownLoad Over,File:"+fileNum);
